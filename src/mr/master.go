@@ -53,9 +53,10 @@ func (m *Master) GetMapTask(args *GetMapTaskArgs, reply *GetMapTaskReply) error 
 	m.mutex.Lock()
 	for i, v := range m.mapJobStatus {
 		if v == unallocated {
-			reply.index = i
-			reply.filename = m.fileNames[i]
+			reply.Index = i
+			reply.Filename = m.fileNames[i]
 			m.mapJobStatus[i] = running
+			go mapJobWatcher(m, i)
 			break
 		}
 	}
@@ -67,8 +68,9 @@ func (m *Master) GetReduceTask(args *GetReduceTaskArgs, reply *GetReduceTaskRepl
 	m.mutex.Lock()
 	for i, v := range m.reduceJobStatus {
 		if v == unallocated {
-			reply.index = i
+			reply.Index = i
 			m.reduceJobStatus[i] = running
+			go reduceJobWatcher(m, i)
 			break
 		}
 	}
@@ -77,13 +79,12 @@ func (m *Master) GetReduceTask(args *GetReduceTaskArgs, reply *GetReduceTaskRepl
 }
 
 func (m *Master) GetnReduce(args *GetnReduceArgs, reply *GetnReduceReply) error {
-	reply.nReduce = len(m.reduceJobStatus)
+	reply.NReduce = len(m.reduceJobStatus)
 	return nil
 }
 
-func (m *Master) UpdateMapTaskStatus(args *UpdateStatusArgs, reply *UpdateStatusReply) error {
+func (m *Master) CheckMapJobStatus(args *CheckJobStatusArgs, reply *CheckJobStatusReply) error {
 	m.mutex.Lock()
-	m.mapJobStatus[args.index] = finished
 	flag := true
 	for _, v := range m.mapJobStatus {
 		if v != finished {
@@ -92,13 +93,12 @@ func (m *Master) UpdateMapTaskStatus(args *UpdateStatusArgs, reply *UpdateStatus
 		}
 	}
 	m.mutex.Unlock()
-	reply.ifFinished = flag
+	reply.IfFinished = flag
 	return nil
 }
 
-func (m *Master) UpdateReduceTaskStatus(args *UpdateStatusArgs, reply *UpdateStatusReply) error {
+func (m *Master) CheckReduceJobStatus(args *CheckJobStatusArgs, reply *CheckJobStatusReply) error {
 	m.mutex.Lock()
-	m.reduceJobStatus[args.index] = finished
 	flag := true
 	for _, v := range m.reduceJobStatus {
 		if v != finished {
@@ -107,7 +107,21 @@ func (m *Master) UpdateReduceTaskStatus(args *UpdateStatusArgs, reply *UpdateSta
 		}
 	}
 	m.mutex.Unlock()
-	reply.ifFinished = flag
+	reply.IfFinished = flag
+	return nil
+}
+
+func (m *Master) UpdateMapTaskStatus(args *UpdateStatusArgs, reply *UpdateStatusReply) error {
+	m.mutex.Lock()
+	m.mapJobStatus[args.Index] = finished
+	m.mutex.Unlock()
+	return nil
+}
+
+func (m *Master) UpdateReduceTaskStatus(args *UpdateStatusArgs, reply *UpdateStatusReply) error {
+	m.mutex.Lock()
+	m.reduceJobStatus[args.Index] = finished
+	m.mutex.Unlock()
 	return nil
 }
 
@@ -143,12 +157,18 @@ func (m *Master) server() {
 // if the entire job has finished.
 //
 func (m *Master) Done() bool {
-	ret := false
+	//ret := false
 
 	// Your code here.
-
-
-	return ret
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	for _, v := range m.reduceJobStatus {
+		if v != finished {
+			return false
+		}
+	}
+	fmt.Println("finished!")
+	return true
 }
 
 //
@@ -157,17 +177,13 @@ func (m *Master) Done() bool {
 // nReduce is the number of reduce tasks to use.
 //
 func MakeMaster(files []string, nReduce int) *Master {
+	// Your code here.
 	m := Master{
 		fileNum:          len(files),
 		fileNames:        files,
 		mapJobStatus:     make([]int, len(files)),
 		reduceJobStatus:  make([]int, nReduce),
 	}
-
-	// Your code here.
-	fmt.Println(m.fileNames)
-	fmt.Println(m.mapJobStatus)
-	fmt.Println(m.reduceJobStatus)
 
 	m.server()
 	return &m

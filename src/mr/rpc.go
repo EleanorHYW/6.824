@@ -28,8 +28,8 @@ type GetMapTaskArgs struct {
 }
 
 type GetMapTaskReply struct {
-	index int
-	filename string
+	Index int
+	Filename string
 }
 
 type GetnReduceArgs struct {
@@ -37,7 +37,7 @@ type GetnReduceArgs struct {
 }
 
 type GetnReduceReply struct {
-	nReduce int
+	NReduce int
 }
 
 type GetReduceTaskArgs struct {
@@ -45,15 +45,23 @@ type GetReduceTaskArgs struct {
 }
 
 type GetReduceTaskReply struct {
-	index int
+	Index int
 }
 
 type UpdateStatusArgs struct {
-	index int
+	Index int
 }
 
 type UpdateStatusReply struct {
-	ifFinished bool
+
+}
+
+type CheckJobStatusArgs struct {
+
+}
+
+type CheckJobStatusReply struct {
+	IfFinished bool
 }
 
 // Cook up a unique-ish UNIX-domain socket name
