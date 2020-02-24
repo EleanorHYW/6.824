@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2d503108-ef02-4101-9725-547aa010e156" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/main/wc.so" beforeDir="false" afterPath="$PROJECT_DIR$/main/wc.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mrapps/crash.so" beforeDir="false" afterPath="$PROJECT_DIR$/mrapps/crash.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mrapps/indexer.so" beforeDir="false" afterPath="$PROJECT_DIR$/mrapps/indexer.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mrapps/mtiming.so" beforeDir="false" afterPath="$PROJECT_DIR$/mrapps/mtiming.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mrapps/nocrash.so" beforeDir="false" afterPath="$PROJECT_DIR$/mrapps/nocrash.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mrapps/rtiming.so" beforeDir="false" afterPath="$PROJECT_DIR$/mrapps/rtiming.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mrapps/wc.so" beforeDir="false" afterPath="$PROJECT_DIR$/mrapps/wc.so" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" path="/usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1YCPhe6aBWb6PGr2DsPICLmb6C0" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="configurable.Global.GOPATH.is.expanded" value="true" />
+    <property name="configurable.Module.GOPATH.is.expanded" value="false" />
+    <property name="configurable.Project.GOPATH.is.expanded" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RunManager" selected="Go Build.master">
+    <configuration name="master" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="src" />
+      <working_directory value="$PROJECT_DIR$/main" />
+      <go_parameters value="-i" />
+      <parameters value="pg-being_ernest.txt pg-dorian_gray.txt pg-frankenstein.txt pg-grimm.txt pg-huckleberry_finn.txt pg-metamorphosis.txt pg-sherlock_holmes.txt pg-tom_sawyer.txt" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/main/mrmaster.go" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sequential" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="src" />
+      <working_directory value="$PROJECT_DIR$/main" />
+      <go_parameters value="-i" />
+      <parameters value="wc.so pg*.txt" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/main/mrsequential.go" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2">
+        <option name="GoBeforeRunTask" command="build -buildmode=plugin -gcflags=&quot;all=-N -l&quot; ../mrapps/wc.go" />
+      </method>
+    </configuration>
+    <configuration name="worker" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="src" />
+      <working_directory value="$PROJECT_DIR$/main" />
+      <go_parameters value="-i" />
+      <parameters value="./wc.so" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/main/mrworker.go" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2">
+        <option name="GoBeforeRunTask" command="build -buildmode=plugin -gcflags=&quot;all=-N -l&quot; ../mrapps/wc.go" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.master" />
+      <item itemvalue="Go Build.worker" />
+      <item itemvalue="Go Build.sequential" />
+    </list>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="184" y="113" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582518047256">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="184" y="113" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1582518047256" />
+    <state x="449" y="260" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1582543106729">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="449" y="260" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1582543106729" />
+    <state width="1398" height="312" key="GridCell.Tab.0.bottom" timestamp="1582534931600">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="312" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1582534931600" />
+    <state width="1398" height="250" key="GridCell.Tab.0.bottom/0.23.1440.829@0.23.1440.829" timestamp="1582517809237" />
+    <state width="1398" height="312" key="GridCell.Tab.0.center" timestamp="1582534931598">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="312" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1582534931598" />
+    <state width="1398" height="250" key="GridCell.Tab.0.center/0.23.1440.829@0.23.1440.829" timestamp="1582517809226" />
+    <state width="1398" height="312" key="GridCell.Tab.0.left" timestamp="1582534931597">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="312" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1582534931597" />
+    <state width="1398" height="250" key="GridCell.Tab.0.left/0.23.1440.829@0.23.1440.829" timestamp="1582517809225" />
+    <state width="1398" height="312" key="GridCell.Tab.0.right" timestamp="1582534931599">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="312" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1582534931599" />
+    <state width="1398" height="250" key="GridCell.Tab.0.right/0.23.1440.829@0.23.1440.829" timestamp="1582517809226" />
+    <state width="1398" height="312" key="GridCell.Tab.1.bottom" timestamp="1582534931604">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="312" key="GridCell.Tab.1.bottom/0.0.1440.900@0.0.1440.900" timestamp="1582534931604" />
+    <state width="1398" height="250" key="GridCell.Tab.1.bottom/0.23.1440.829@0.23.1440.829" timestamp="1582517811819" />
+    <state width="1398" height="312" key="GridCell.Tab.1.center" timestamp="1582534931602">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="312" key="GridCell.Tab.1.center/0.0.1440.900@0.0.1440.900" timestamp="1582534931602" />
+    <state width="1398" height="250" key="GridCell.Tab.1.center/0.23.1440.829@0.23.1440.829" timestamp="1582517811817" />
+    <state width="1398" height="312" key="GridCell.Tab.1.left" timestamp="1582534931601">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="312" key="GridCell.Tab.1.left/0.0.1440.900@0.0.1440.900" timestamp="1582534931601" />
+    <state width="1398" height="250" key="GridCell.Tab.1.left/0.23.1440.829@0.23.1440.829" timestamp="1582517811817" />
+    <state width="1398" height="312" key="GridCell.Tab.1.right" timestamp="1582534931603">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="312" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1582534931603" />
+    <state width="1398" height="250" key="GridCell.Tab.1.right/0.23.1440.829@0.23.1440.829" timestamp="1582517811818" />
+    <state x="221" y="89" key="SettingsEditor" timestamp="1582530955491">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="221" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1582530955491" />
+    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1582517917486">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1582517917486" />
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1582516411822">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1582516411822" />
+  </component>
+</project>
