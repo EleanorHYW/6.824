@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 import "log"
 import "net/rpc"
@@ -50,6 +51,9 @@ func Worker(mapf func(string, string) []KeyValue,
 
 	// Your worker implementation here.
 	//fmt.Println("Entering map...")
+	for CallExample() == false {
+		time.Sleep(time.Second)
+	}
 	for {
 		if ret := checkMapFinish(); ret {
 			break
@@ -83,6 +87,7 @@ func Worker(mapf func(string, string) []KeyValue,
 		kva = nil
 
 		callMapFinished(mapTaskIndex)
+		time.Sleep(time.Second)
 	}
 
 	//fmt.Println("Entering reduce...")
@@ -142,6 +147,7 @@ func Worker(mapf func(string, string) []KeyValue,
 		_ = os.Rename(otfile.Name(), "./mr-out-" + strconv.Itoa(reduceTaskIndex))
 		otfile.Close()
 		callReduceFinished(reduceTaskIndex)
+		time.Sleep(time.Second)
 	}
 
 
@@ -202,7 +208,7 @@ func checkReduceFinish() bool {
 //
 // the RPC argument and reply types are defined in rpc.go.
 //
-func CallExample() {
+func CallExample() bool {
 
 	// declare an argument structure.
 	args := ExampleArgs{}
@@ -214,10 +220,7 @@ func CallExample() {
 	reply := ExampleReply{}
 
 	// send the RPC request, wait for the reply.
-	call("Master.Example", &args, &reply)
-
-	// reply.Y should be 100.
-	fmt.Printf("reply.Y %v\n", reply.Y)
+	return call("Master.Example", &args, &reply)
 }
 
 //
