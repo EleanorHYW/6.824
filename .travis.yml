@@ -1,6 +1,6 @@
 language: go
 go:
-  - "1.13"
+  - "1.13.6"
 script:
   - cd src/main
   - sh test-mr.sh
