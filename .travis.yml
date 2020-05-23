@@ -1,6 +1,7 @@
 language: go
 go:
-  - "1.13.6"
+  - "1.13"
 script:
+  - cd .. && mv 6.824/ ~/ && cd 6.824/
   - cd src/main
   - sh test-mr.sh
