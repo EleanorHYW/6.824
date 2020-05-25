@@ -8,7 +8,6 @@ install:
 
 jobs:
   allow_failures:
-  include:
     - stage: lab2a
       script: go test -run 2A
     - stage: lab2b
