@@ -1,0 +1,16 @@
+language: go
+go:
+  - "1.13"
+
+install:
+  - cd .. && mv 6.824/ ~/ && cd ~/6.824/
+  - cd src/main/raft
+
+jobs:
+  include:
+    - stage: lab2a
+      script: go test -run 2A
+    - stage: lab2b
+      script: go test -run 2B
+    - stage: lab2c
+      script: go test -run 2C
