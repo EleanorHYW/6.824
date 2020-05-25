@@ -4,9 +4,10 @@ go:
 
 install:
   - cd .. && mv 6.824/ ~/ && cd ~/6.824/
-  - cd src/main/raft
+  - cd src/raft
 
 jobs:
+  allow_failures:
   include:
     - stage: lab2a
       script: go test -run 2A
