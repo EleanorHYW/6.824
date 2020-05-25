@@ -181,10 +181,16 @@ func (rf *Raft) getLastLogTermIndex() (int, int) {
 	return rf.log[l].Term, rf.log[l].Index
 }
 
-func (rf *Raft) isUptoDate(candidateTerm int) bool {
-	// term, _ := rf.getLastLogTermIndex()
-	// return candidateTerm > term || (candidateTerm == term && candidateIndex > index)
-	return candidateTerm >= rf.currentTerm
+func (rf *Raft) isUptoDate(candidateTerm int, candidateIndex int) bool {
+	// 5.4.2
+	// Raft determines which of two logs is more up-to-date
+	// by comparing the index and term of the last entries in the
+	// logs. If the logs have last entries with different terms, then
+	// the log with the later term is more up-to-date. If the logs
+	// end with the same term, then whichever log is longer is
+	// more up-to-date.
+	term, index := rf.getLastLogTermIndex()
+	return candidateTerm > term || (candidateTerm == term && candidateIndex >= index)
 }
 
 //
@@ -195,7 +201,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
 
-	//fmt.Printf("%d, term %d receiving RequestVote: from %d, term %d\n", rf.me, rf.currentTerm, args.CandidateId, args.Term)
+	DPrintf("%d, term %d receiving RequestVote: from %d, term %d\n", rf.me, rf.currentTerm, args.CandidateId, args.Term)
 
 	// always update reply.term
 	reply.Term = rf.currentTerm
@@ -203,12 +209,12 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 
 	//  Reply false if term < currentTerm
 	if args.Term < rf.currentTerm {
-		//fmt.Println("RequestVote: case 1")
+		DPrintf("RequestVote: case 1\n")
 		return
 	} else if args.Term > rf.currentTerm {
 		// If RPC request or response contains term T > currentTerm:
 		// set currentTerm = T, convert to follower
-		//fmt.Println("RequestVote: case 2")
+		DPrintf("RequestVote: case 2\n")
 		rf.role = Follower
 		rf.currentTerm = args.Term
 		rf.votedFor = -1
@@ -216,10 +222,10 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 
 	// If votedFor is null or candidateId, and candidate’s log is at
 	// least as up-to-date as receiver’s log, grant vote
-	//fmt.Printf("current vote for %d\n", rf.votedFor)
-	//fmt.Println(rf.isUptoDate(args.Term))
-	if (rf.votedFor == -1 || rf.votedFor == args.CandidateId) && rf.isUptoDate(args.Term) {
-		//fmt.Printf("%d vote for %d\n", rf.me, args.CandidateId)
+	DPrintf("current vote for %d\n", rf.votedFor)
+	DPrintf("%v", rf.isUptoDate(args.LastLogTerm, args.LastLogIndex))
+	if (rf.votedFor == -1 || rf.votedFor == args.CandidateId) && rf.isUptoDate(args.LastLogTerm, args.LastLogIndex) {
+		DPrintf("%d vote for %d\n", rf.me, args.CandidateId)
 		rf.votedFor = args.CandidateId
 		reply.VoteGranted = true
 		rf.chanGrantVote <- true
@@ -276,7 +282,7 @@ func (rf *Raft) sendRequestVote(server int, args *RequestVoteArgs, reply *Reques
 		if reply.VoteGranted {
 			rf.voteCount++
 			if rf.voteCount > len(rf.peers) / 2 {
-				//fmt.Printf("%d win election\n", rf.me)
+				DPrintf("%d win election\n", rf.me)
 				rf.role = Leader
 				// for each server, index of the next log entry
 				// to send to that server (initialized to leader
@@ -301,7 +307,7 @@ func (rf *Raft) sendRequestVote(server int, args *RequestVoteArgs, reply *Reques
 
 func (rf *Raft) sendRequestVoteToPeers() {
 	rf.mu.Lock()
-	//fmt.Printf("%d sendRequestVoteToPeers\n", rf.me)
+	DPrintf("%d sendRequestVoteToPeers\n", rf.me)
 	lastLogIndex, lastLogTerm := rf.getLastLogTermIndex()
 	args := &RequestVoteArgs{
 		Term:         rf.currentTerm,
@@ -398,7 +404,7 @@ func (rf *Raft) sendAppendEntriesToPeers() {
 			break
 		}
 		if i != rf.me {
-			//fmt.Printf("%d sendAppendEntriesToPeers %d\n", rf.me, i)
+			DPrintf("%d sendAppendEntriesToPeers %d\n", rf.me, i)
 			go rf.sendAppendEntries(i, args, &AppendEntriesReply{})
 		}
 	}
@@ -424,7 +430,26 @@ func (rf *Raft) Start(command interface{}) (int, int, bool) {
 	isLeader := true
 
 	// Your code here (2B).
+	rf.mu.Lock()
+	defer rf.mu.Unlock()
+	isLeader = rf.role == Leader
 
+	// if this
+	// server isn't the leader, returns false
+	if isLeader {
+		// the first return value is the index that the command will appear at
+		// if it's ever committed. the second return value is the current
+		// term. the third return value is true if this server believes it is
+		// the leader.
+		_, lastLogIndex := rf.getLastLogTermIndex()
+		index = lastLogIndex + 1
+		term = rf.currentTerm
+		rf.log = append(rf.log, LogEntry{
+			Term:    term,
+			Index:   index,
+			Command: command,
+		})
+	}
 
 	return index, term, isLeader
 }
@@ -494,7 +519,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 				// convert to candidate
 				case <-time.After(time.Millisecond * time.Duration(rand.Intn(200)) + electionTimeoutBase):
 					rf.role = Candidate
-					//fmt.Printf("%d turn to candidate\n", rf.me)
+					DPrintf("%d turn to candidate\n", rf.me)
 				}
 			case Leader:
 				// send initial empty AppendEntries RPCs
