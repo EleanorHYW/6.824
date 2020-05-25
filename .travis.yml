@@ -2,12 +2,18 @@ language: go
 go:
   - "1.13"
 
+env:
+  - CAN_FAIL=true
+    
 install:
   - cd .. && mv 6.824/ ~/ && cd ~/6.824/
   - cd src/raft
 
 jobs:
   allow_failures:
+    env:
+      - CAN_FAIL=true
+  includes:
     - stage: lab2a
       script: go test -run 2A
     - stage: lab2b
