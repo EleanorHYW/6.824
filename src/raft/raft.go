@@ -272,7 +272,7 @@ func (rf *Raft) sendRequestVote(server int, args *RequestVoteArgs, reply *Reques
 
 	// if return
 	if ok {
-		if rf.role != Candidate || rf.currentTerm != args.Term {
+		if rf.role != Candidate {
 			return ok
 		}
 		// If RPC request or response contains term T > currentTerm:
@@ -303,7 +303,7 @@ func (rf *Raft) sendRequestVote(server int, args *RequestVoteArgs, reply *Reques
 func (rf *Raft) sendRequestVoteToPeers() {
 	rf.mu.Lock()
 	DPrintf("%d sendRequestVoteToPeers\n", rf.me)
-	lastLogIndex, lastLogTerm := rf.getLastLogTermIndex()
+	lastLogTerm, lastLogIndex := rf.getLastLogTermIndex()
 	args := &RequestVoteArgs{
 		Term:         rf.currentTerm,
 		CandidateId:  rf.me,
