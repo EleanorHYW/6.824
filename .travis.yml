@@ -14,8 +14,6 @@ jobs:
     - stage: lab2a
       script: go test -run 2A
     - stage: lab2b
-      env:
-        - CAN_FAIL=true
       script: go test -run 2B
     - stage: lab2c
       env:
