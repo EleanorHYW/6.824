@@ -25,8 +25,8 @@ import (
 )
 import "../labrpc"
 
-// import "bytes"
-// import "../labgob"
+ import "bytes"
+ import "../labgob"
 
 
 
@@ -129,6 +129,14 @@ func (rf *Raft) persist() {
 	// e.Encode(rf.yyy)
 	// data := w.Bytes()
 	// rf.persister.SaveRaftState(data)
+	w := new(bytes.Buffer)
+	e := labgob.NewEncoder(w)
+	// Persistent state on all servers:
+	e.Encode(rf.currentTerm)
+	e.Encode(rf.votedFor)
+	e.Encode(rf.log)
+	data := w.Bytes()
+	rf.persister.SaveRaftState(data)
 }
 
 
@@ -152,6 +160,11 @@ func (rf *Raft) readPersist(data []byte) {
 	//   rf.xxx = xxx
 	//   rf.yyy = yyy
 	// }
+	r := bytes.NewBuffer(data)
+	d := labgob.NewDecoder(r)
+	d.Decode(&rf.currentTerm)
+	d.Decode(&rf.votedFor)
+	d.Decode(&rf.log)
 }
 
 
@@ -203,6 +216,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	// Your code here (2A, 2B).
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
+	defer rf.persist()
 
 	DPrintf("%d, term %d receiving RequestVote: from %d, term %d\n", rf.me, rf.currentTerm, args.CandidateId, args.Term)
 
@@ -269,6 +283,7 @@ func (rf *Raft) sendRequestVote(server int, args *RequestVoteArgs, reply *Reques
 
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
+	defer rf.persist()
 
 	// if return
 	if ok {
@@ -378,6 +393,7 @@ func (rf *Raft) commitLog() {
 func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply) {
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
+	defer rf.persist()
 
 	// always update reply.term
 	reply.Term = rf.currentTerm
@@ -457,6 +473,7 @@ func (rf *Raft) sendAppendEntries(server int, args *AppendEntriesArgs, reply *Ap
 
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
+	defer rf.persist()
 
 	if ok {
 		// If RPC request or response contains term T > currentTerm:
@@ -508,6 +525,7 @@ func (rf *Raft) sendAppendEntries(server int, args *AppendEntriesArgs, reply *Ap
 func (rf *Raft) sendAppendEntriesToPeers() {
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
+	defer rf.persist()
 
 	// send requestVote to all peers
 	for i := range rf.peers {
@@ -574,6 +592,7 @@ func (rf *Raft) Start(command interface{}) (int, int, bool) {
 			Index:   index,
 			Command: command,
 		})
+		rf.persist()
 	}
 
 	return index, term, isLeader
@@ -645,6 +664,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 				// convert to candidate
 				case <-time.After(time.Millisecond * time.Duration(rand.Intn(200)) + electionTimeoutBase):
 					rf.role = Candidate
+					rf.persist()
 					DPrintf("%d turn to candidate\n", rf.me)
 				}
 			case Leader:
@@ -663,6 +683,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 				rf.votedFor = rf.me
 				rf.voteCount = 1
 				rf.mu.Unlock()
+				rf.persist()
 				go rf.sendRequestVoteToPeers()
 
 				select {
@@ -670,6 +691,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 				// follower
 				case <-rf.chanHeartbeat:
 					rf.role = Follower
+					rf.persist()
 				case <-rf.chanWinElect:
 					// for each server, index of the next log entry
 					// to send to that server (initialized to leader
