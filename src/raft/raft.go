@@ -539,10 +539,13 @@ func (rf *Raft) sendAppendEntriesToPeers() {
 				Term:         rf.currentTerm,
 				LeaderId:     rf.me,
 				PrevLogIndex: rf.nextIndex[i] - 1,
-				PrevLogTerm:  rf.log[rf.nextIndex[i] - 1].Term,
 				Entries:      nil,
 				LeaderCommit: rf.commitIndex,
 			}
+			if rf.nextIndex[i] - 1 >= 0 {
+				args.PrevLogTerm = rf.log[rf.nextIndex[i] - 1].Term
+			}
+
 			_, lastLogIndex := rf.getLastLogTermIndex()
 			if rf.nextIndex[i] <= lastLogIndex {
 				args.Entries = rf.log[args.PrevLogIndex + 1:]
