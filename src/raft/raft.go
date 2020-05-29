@@ -426,7 +426,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	// can include the term of the conflicting entry and the first
 	// index it stores for that term. With this information, the
 	// leader can decrement nextIndex to bypass all of the conflicting entries in that term;
-	if args.PrevLogTerm != rf.log[args.PrevLogIndex].Term {
+	if args.PrevLogIndex >= 0 && args.PrevLogTerm != rf.log[args.PrevLogIndex].Term {
 		//fmt.Println(args.PrevLogIndex)
 		pos := args.PrevLogIndex - 1
 		for pos >= 0 {
