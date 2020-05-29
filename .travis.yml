@@ -7,15 +7,10 @@ install:
   - cd src/raft
 
 jobs:
-  allow_failures:
-    env:
-      - CAN_FAIL=true
   include:
     - stage: lab2a
       script: go test -run 2A
     - stage: lab2b
       script: go test -run 2B
     - stage: lab2c
-      env:
-        - CAN_FAIL=true
       script: go test -run 2C
